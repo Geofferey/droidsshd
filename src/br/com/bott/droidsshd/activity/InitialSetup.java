@@ -223,6 +223,24 @@ public class InitialSetup extends Activity {
 				+ Base.DROPBEAR_BIN_KEY);
 		Util.symlink(path, Base.getDropbearBinDirPath() + "/"
 				+ Base.DROPBEAR_BIN_SCP);
+		
+		String sftppath = Base.getDropbearBinDirPath() + "/" + Base.DROPBEAR_BIN_SFTP;
+		try {
+			InputStream is = getAssets().open(Base.DROPBEAR_BIN_SFTP);
+			FileOutputStream os = new FileOutputStream(sftppath);
+			byte[] buffer = new byte[4096];
+			int count;
+			while ((count = is.read(buffer)) != -1) {
+				os.write(buffer, 0, count);
+			}
+			is.close();
+			os.close();
+		} catch (IOException e) {
+			Log.e(TAG, "Exception when copying asset sftp-server: ", e);
+			e.printStackTrace();
+			return false;
+		}
+		Util.chmod(sftppath, 0755);
 		return true;
 	}
 
