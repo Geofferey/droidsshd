@@ -58,6 +58,7 @@ public class Base {
 
 	public static boolean debug;
 	protected static int daemonPort;
+	protected static boolean manualServiceStart = true;
 	protected static boolean runDaemonAsRoot;
 	protected static boolean startedAsRoot;
 	protected static boolean startAtBoot;
@@ -90,6 +91,20 @@ public class Base {
 
 	public static boolean startDaemonAtBootOnlyIfRunningBefore() {
 		return startAtBootOnlyIfRunningBefore; 
+	}
+
+	public static boolean manualServiceStart() {
+		return manualServiceStart;
+	}
+
+	public static void setManualServiceStart(boolean b) {
+		manualServiceStart = b;
+		if (debug) {
+			if (b)
+				Log.d(TAG, "setManualServiceStart = 1");
+			else
+				Log.d(TAG, "setManualServiceStart = 0");
+		}
 	}
 
 	public static boolean runDaemonAsRoot() {

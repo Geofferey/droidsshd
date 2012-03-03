@@ -67,17 +67,20 @@ public class DroidSSHd extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Base.initialize(getBaseContext());
+		Base.setDropbearDaemonStatus(Base.DAEMON_STATUS_UNKNOWN);
+
 		setContentView(R.layout.act_main);
-
-		Base.setDropbearDaemonStatus(Base.DAEMON_STATUS_STOPPED);
-
 		setUpUiListeners();
-
-		mDropbearDaemonHandlerService = new Intent(this, br.com.bott.droidsshd.system.DroidSSHdService.class);
 
 		if ((!Util.validateHostKeys() || (!Util.checkPathToBinaries()))) {
 			startInitialSetupActivity();
 		}
+		
+		Base.setDropbearDaemonStatus(Base.DAEMON_STATUS_STOPPED);
+		Base.setManualServiceStart(true);
+
+		mDropbearDaemonHandlerService = new Intent(this, br.com.bott.droidsshd.system.DroidSSHdService.class);
+		mHandler.postDelayed(mUpdateUI, 150);
 	}
 
 	@Override
@@ -99,8 +102,8 @@ public class DroidSSHd extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		doUnbindDaemonHandlerService(mDropbearDaemonHandlerService);
+		super.onDestroy();
 	}
 
 	@Override
@@ -155,11 +158,13 @@ public class DroidSSHd extends Activity {
 							Log.v(TAG, "btnStartStop pressed: stopping");
 						}
 						stopDropbear();
+						mHandler.postDelayed(mUpdateUI, 2000);
 					} else {
 						if(Base.debug) {
 							Log.v(TAG, "btnStartStop pressed: starting");
 						}
 						startDropbear();
+						mHandler.postDelayed(mUpdateUI, 1000);
 					}
 //				setResult(android.app.Activity.RESULT_OK);
 			}
@@ -190,11 +195,15 @@ public class DroidSSHd extends Activity {
 	public void updateStatus() {
 		String tmp = "";
 		Iterator<String> ipAddr = Util.getLocalIpAddress();
+		try {
 		while(ipAddr.hasNext()) {
 			tmp = tmp + ipAddr.next() + " ";
 			if (ipAddr.hasNext()) {
 				tmp = tmp + ", ";
 			}
+		}
+		} catch (Exception e) {
+			Log.w(TAG, "updateStatus() exception in IpAddress Iterator");
 		}
 		status_ip_address.setText(tmp);
 		status_username.setText(Base.getUsername());
@@ -233,12 +242,20 @@ public class DroidSSHd extends Activity {
 			status_content.setText("Stopped");
 			break;
 
+		case Base.DAEMON_STATUS_UNKNOWN:
+			btnStartStop.setEnabled(true);
+			btnStartStop.setFocusable(true);
+			btnStartStop.setText("Start");
+			status_content.setText("Unknown");
+			break;
 		default:
 			break;
 		}
 	}
 
 	public void startDropbear() {
+
+		doBindDaemonHandlerService(mDropbearDaemonHandlerService);
 		if (!Util.checkPathToBinaries()) {
 			if(Base.debug) {
 				Log.v(TAG, "startDropbear bailing out: status was " + Base.getDropbearDaemonStatus() + ", changed to STOPPED(" + ")" );
@@ -257,7 +274,7 @@ public class DroidSSHd extends Activity {
 			Util.showMsg("Host keys not found");
 			return;
 		}
-		if(Base.getDropbearDaemonStatus() == Base.DAEMON_STATUS_STOPPED) {
+		if(Base.getDropbearDaemonStatus() <= Base.DAEMON_STATUS_STOPPED) {
 			Base.setDropbearDaemonStatus(Base.DAEMON_STATUS_STARTING);
 			if (Base.debug) {
 				Log.d(TAG, "Status was STOPPED, now it's STARTING");
@@ -402,6 +419,7 @@ public class DroidSSHd extends Activity {
 	};
 
 	private void doBindDaemonHandlerService(Intent intent) {
+		Base.setManualServiceStart(true);
 		mDaemonHandlerIsBound = bindService(intent, mDaemonHandlerConnection, Context.BIND_AUTO_CREATE);
 	}
 
