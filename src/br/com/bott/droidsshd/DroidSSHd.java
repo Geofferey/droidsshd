@@ -20,8 +20,10 @@ import br.com.bott.droidsshd.tools.*;
 import java.util.Iterator;
 import android.util.Log;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -339,7 +341,18 @@ public class DroidSSHd extends Activity {
 //			i.setAction("android.intent.action.VIEW");
 //			i.setData("http://www.android.com");
 //			i.setType(type)
-			Util.showMsg("About");
+//			Util.showMsg("About");
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("About")
+			       .setMessage(R.string.about_message)
+			       .setCancelable(true)
+			       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+			AlertDialog about = builder.create();
+			about.show();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

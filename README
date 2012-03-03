@@ -1,4 +1,25 @@
-Tools to configure and manage a Dropbear SSH daemon on Android devices: secure, remote access to your device via network.
+This is DroidSSHd.
+A tool to install, configure and manage a Dropbear SSH daemon on Android devices: secure, remote access to your device via network.
 
+Original author: Augusto Bott (mestre) <augusto@bott.com.br>
 http://code.google.com/p/droidsshd/
+https://github.com/mestre/droidsshd
 
+This version has beed created by Matthias Goebl <matthias.goebl@goebl.net>
+https://github.com/matgoebl/droidsshd
+It additionally includes
+- a sftp-server posted by rgeorgi@gmail.com in http://code.google.com/p/droidsshd/issues/detail?id=1
+- ported bugfixes by Tanguy Pruvot <tanguy.pruvot@gmail.com> from https://github.com/tpruvot/android_external_droidsshd
+  (more try/catch, service startup, released boot receiver, status management)
+  but preserved the dropbear binaries and related code from https://github.com/mestre/droidsshd
+- a service intent "stop"
+  Now KebabApps' Llama can start/stop the service depending on location profiles:
+  Choose "custom intent", "start service", package "br.com.bott.droidsshd", class "br.com.bott.droidsshd.system.DroidSSHdService".
+  To stop the server add data "stop", to start it leave data empty.
+
+DroidSSHd is open source software: you can redistribute it and/or modify
+it under the terms of the Apache License 2.0
+
+DroidSSHd is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
