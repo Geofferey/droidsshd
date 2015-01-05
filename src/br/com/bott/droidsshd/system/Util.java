@@ -100,6 +100,20 @@ public class Util {
 					Log.d(TAG, "pidFile = " + pid + " - " + pidFile.getAbsolutePath() + " = " + tmp);
 				}
 			}
+			catch (FileNotFoundException ex) {
+				if(ex.getMessage().contains("EACCES")) {
+					if (Base.debug) {
+						Log.d(TAG, "Permission denied reading Dropbear PID file " + pidFile.getAbsolutePath() + ". Running command to fix this.");
+					}
+					doRun("chmod 0644 " + path, true, null);
+				} else {
+					ex.printStackTrace();
+ 					if (Base.debug) {
+ 						Log.d(TAG, "Can't read Dropbear PID file " + pidFile.getAbsolutePath());
+ 					}
+ 					return pid;
+				}
+			} 
 			catch (Exception ex) {
 				ex.printStackTrace();
 				if (Base.debug) {

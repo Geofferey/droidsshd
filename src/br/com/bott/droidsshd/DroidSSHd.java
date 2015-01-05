@@ -301,6 +301,7 @@ public class DroidSSHd extends Activity {
 			String cmd = "kill -2 " + pid;
 //			Util.doRun(cmd, Base.runDaemonAsRoot(), mLogviewHandler);
 			Util.doRun(cmd, Base.runDaemonAsRoot(), null);
+			Util.doRun("killall -2 dropbear", Base.runDaemonAsRoot(), null);
 			stopService(mDropbearDaemonHandlerService);
 		}
 		startLongRunningOperation();

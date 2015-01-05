@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="br.com.bott.droidsshd"
 	android:installLocation="auto"
-	android:versionName="0.6-mg"
+	android:versionName="0.6-mg2"
 	android:versionCode="6">
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
