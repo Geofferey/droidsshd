@@ -231,6 +231,8 @@ public class InitialSetup extends Activity {
 				+ Base.DROPBEAR_BIN_KEY);
 		Util.symlink(path, Base.getDropbearBinDirPath() + "/"
 				+ Base.DROPBEAR_BIN_SCP);
+		Util.symlink(path, Base.getDropbearBinDirPath() + "/"
+				+ Base.DROPBEAR_BIN_CLIENT);
 		
 		String sftppath = Base.getDropbearBinDirPath() + "/" + Base.DROPBEAR_BIN_SFTP;
 		try {
